@@ -3,11 +3,11 @@ import React from 'react';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BarChart2, LayoutDashboard, LogOut, Film, Disc } from 'lucide-react';
+import { Ticket, LayoutDashboard, LogOut, Film, Disc } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 const navItems = [
-  { href: '/admin',          label: 'Metrics',  icon: BarChart2,       exact: true },
+  { href: '/admin/tickets',  label: 'Tickets',  icon: Ticket,          exact: false },
   { href: '/admin/homepage', label: 'Homepage', icon: LayoutDashboard, exact: false },
   { href: '/admin/shows',    label: 'Shows',    icon: Film,            exact: false },
   { href: '/admin/releases', label: 'Releases', icon: Disc,            exact: false },
