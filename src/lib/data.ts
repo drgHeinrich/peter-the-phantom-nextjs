@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { createClient } from './supabase/server';
 import type { Project } from '@/types/project';
 import type { Release } from '@/types/release';
@@ -54,32 +55,40 @@ function rowToRelease(row: Record<string, unknown>): Release {
   };
 }
 
-export async function getShows(): Promise<Project[]> {
+async function fetchShows(): Promise<Project[]> {
   const supabase = await createClient();
   const { data } = await supabase.from('shows').select('*').order('sort_order', { ascending: true });
   return (data ?? []).map(rowToProject);
 }
 
-export async function getShow(slug: string): Promise<Project | null> {
+async function fetchShow(slug: string): Promise<Project | null> {
   const supabase = await createClient();
   const { data } = await supabase.from('shows').select('*').eq('slug', slug).single();
   return data ? rowToProject(data as Record<string, unknown>) : null;
 }
 
-export async function getReleases(): Promise<Release[]> {
+async function fetchReleases(): Promise<Release[]> {
   const supabase = await createClient();
   const { data } = await supabase.from('releases').select('*').order('sort_order', { ascending: true });
   return (data ?? []).map(rowToRelease);
 }
 
-export async function getRelease(slug: string): Promise<Release | null> {
+async function fetchRelease(slug: string): Promise<Release | null> {
   const supabase = await createClient();
   const { data } = await supabase.from('releases').select('*').eq('slug', slug).single();
   return data ? rowToRelease(data as Record<string, unknown>) : null;
 }
 
-export async function getReleaseById(id: number): Promise<Release | null> {
+async function fetchReleaseById(id: number): Promise<Release | null> {
   const supabase = await createClient();
   const { data } = await supabase.from('releases').select('*').eq('id', id).single();
   return data ? rowToRelease(data as Record<string, unknown>) : null;
 }
+
+const REVALIDATE = 60; // seconds
+
+export const getShows     = unstable_cache(fetchShows,                     ['shows'],          { revalidate: REVALIDATE });
+export const getShow      = unstable_cache(fetchShow,                      ['show'],           { revalidate: REVALIDATE });
+export const getReleases  = unstable_cache(fetchReleases,                  ['releases'],       { revalidate: REVALIDATE });
+export const getRelease   = unstable_cache(fetchRelease,                   ['release'],        { revalidate: REVALIDATE });
+export const getReleaseById = unstable_cache(fetchReleaseById,             ['release-by-id'],  { revalidate: REVALIDATE });
