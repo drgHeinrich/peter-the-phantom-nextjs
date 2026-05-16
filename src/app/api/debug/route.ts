@@ -14,6 +14,14 @@ export async function GET() {
     key_prefix: key ? key.slice(0, 10) : null,
   };
 
+  let internetCheck = null;
+  try {
+    const res = await fetch('https://httpbin.org/get', { signal: AbortSignal.timeout(5000) });
+    internetCheck = { status: res.status, ok: res.ok };
+  } catch (e) {
+    internetCheck = { error: String(e) };
+  }
+
   let rawFetch = null;
   try {
     const res = await fetch(`${url}/rest/v1/shows?select=id,title&limit=3`, {
@@ -21,6 +29,7 @@ export async function GET() {
         apikey: key!,
         Authorization: `Bearer ${key}`,
       },
+      signal: AbortSignal.timeout(10000),
     });
     const text = await res.text();
     rawFetch = { status: res.status, body: text.slice(0, 300) };
@@ -37,5 +46,5 @@ export async function GET() {
     clientQuery = { data: null, error: String(e) };
   }
 
-  return NextResponse.json({ envCheck, rawFetch, clientQuery });
+  return NextResponse.json({ envCheck, internetCheck, rawFetch, clientQuery });
 }
