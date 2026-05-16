@@ -22,6 +22,23 @@ export async function GET() {
     internetCheck = { error: String(e) };
   }
 
+  let supabaseDomainCheck = null;
+  try {
+    const res = await fetch('https://supabase.co', { signal: AbortSignal.timeout(5000) });
+    supabaseDomainCheck = { status: res.status, ok: res.ok };
+  } catch (e) {
+    supabaseDomainCheck = { error: String(e) };
+  }
+
+  let dnsCheck = null;
+  try {
+    const dns = await import('dns/promises');
+    const addrs = await dns.lookup(`${new URL(url!).hostname}`);
+    dnsCheck = { resolved: true, address: addrs.address };
+  } catch (e) {
+    dnsCheck = { resolved: false, error: String(e) };
+  }
+
   let rawFetch = null;
   try {
     const res = await fetch(`${url}/rest/v1/shows?select=id,title&limit=3`, {
@@ -46,5 +63,5 @@ export async function GET() {
     clientQuery = { data: null, error: String(e) };
   }
 
-  return NextResponse.json({ envCheck, internetCheck, rawFetch, clientQuery });
+  return NextResponse.json({ envCheck, internetCheck, supabaseDomainCheck, dnsCheck, rawFetch, clientQuery });
 }
