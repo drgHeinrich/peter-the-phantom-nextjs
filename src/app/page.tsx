@@ -6,7 +6,7 @@ import { FeaturedMusic } from '@/components/FeaturedMusic';
 import { FeaturedVideo } from '@/components/FeaturedVideo';
 import { Footer } from '@/components/Footer';
 import { LandingPage } from '@/components/LandingPage';
-import { HomepageSessionRedirect } from '@/components/HomepageSessionRedirect';
+import { HomepageGate } from '@/components/HomepageGate';
 import type { LandingSection } from '@/types/landing';
 
 export const dynamic = 'force-dynamic';
@@ -34,17 +34,19 @@ export default async function HomePage() {
     return <LandingPage sections={sections} shows={shows} />;
   }
 
+  if (mode === 'redirect' && redirectUrl) {
+    const [shows, releases] = await Promise.all([getShows(), getReleases()]);
+    return <HomepageGate redirectUrl={redirectUrl} shows={shows} releases={releases} />;
+  }
+
   const [shows, releases] = await Promise.all([getShows(), getReleases()]);
   return (
-    <>
-      {mode === 'redirect' && redirectUrl && <HomepageSessionRedirect url={redirectUrl} />}
-      <main className="min-h-screen bg-[var(--color-bg)]">
-        <Hero />
-        <FeaturedUniverse projects={shows} />
-        <FeaturedMusic releases={releases} />
-        <FeaturedVideo />
-        <Footer />
-      </main>
-    </>
+    <main className="min-h-screen bg-[var(--color-bg)]">
+      <Hero />
+      <FeaturedUniverse projects={shows} />
+      <FeaturedMusic releases={releases} />
+      <FeaturedVideo />
+      <Footer />
+    </main>
   );
 }
