@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import { createClient } from './supabase/server';
+import { createReadonlyClient } from './supabase/readonly';
 import type { Project } from '@/types/project';
 import type { Release } from '@/types/release';
 
@@ -56,31 +56,31 @@ function rowToRelease(row: Record<string, unknown>): Release {
 }
 
 async function fetchShows(): Promise<Project[]> {
-  const supabase = await createClient();
+  const supabase = createReadonlyClient();
   const { data } = await supabase.from('shows').select('*').order('sort_order', { ascending: true });
   return (data ?? []).map(rowToProject);
 }
 
 async function fetchShow(slug: string): Promise<Project | null> {
-  const supabase = await createClient();
+  const supabase = createReadonlyClient();
   const { data } = await supabase.from('shows').select('*').eq('slug', slug).single();
   return data ? rowToProject(data as Record<string, unknown>) : null;
 }
 
 async function fetchReleases(): Promise<Release[]> {
-  const supabase = await createClient();
+  const supabase = createReadonlyClient();
   const { data } = await supabase.from('releases').select('*').order('sort_order', { ascending: true });
   return (data ?? []).map(rowToRelease);
 }
 
 async function fetchRelease(slug: string): Promise<Release | null> {
-  const supabase = await createClient();
+  const supabase = createReadonlyClient();
   const { data } = await supabase.from('releases').select('*').eq('slug', slug).single();
   return data ? rowToRelease(data as Record<string, unknown>) : null;
 }
 
 async function fetchReleaseById(id: number): Promise<Release | null> {
-  const supabase = await createClient();
+  const supabase = createReadonlyClient();
   const { data } = await supabase.from('releases').select('*').eq('id', id).single();
   return data ? rowToRelease(data as Record<string, unknown>) : null;
 }
