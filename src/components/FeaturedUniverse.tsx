@@ -36,7 +36,7 @@ export function FeaturedUniverse({ projects }: { projects: Project[] }) {
                   imageAlt={`Project image for ${project.title}`}
                   title={project.title}
                   description={project.description}
-                  onClick={() => router.push(`/universe/${project.slug}`)}
+                  onClick={() => router.push(`/universe/${project.slug}?from=home`)}
                 />
               </motion.div>
             ))}

@@ -36,7 +36,7 @@ export function FeaturedMusic({ releases }: { releases: Release[] }) {
                   imageAlt={`Album cover for ${album.title}`}
                   title={album.title}
                   subtitle={album.year}
-                  onClick={() => router.push(`/music/${album.slug}`)}
+                  onClick={() => router.push(`/music/${album.slug}?from=home`)}
                 />
               </motion.div>
             ))}
