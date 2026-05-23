@@ -11,9 +11,22 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const project = await getShow(slug);
   if (!project) return {};
+  const description = (project.subtitle || project.description).slice(0, 160);
   return {
-    title: `${project.title} — Peter the Phantom`,
-    description: project.description,
+    title: project.title,
+    description,
+    openGraph: {
+      type: 'website',
+      title: project.title,
+      description,
+      images: [{ url: project.image }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description,
+      images: [project.image],
+    },
   };
 }
 

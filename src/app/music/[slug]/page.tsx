@@ -10,9 +10,22 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const release = await getRelease(slug);
   if (!release) return {};
+  const description = `${release.title} by ${release.artist} (${release.year}). ${release.description}`.slice(0, 160);
   return {
-    title: `${release.title} — Peter the Phantom`,
-    description: release.description,
+    title: release.title,
+    description,
+    openGraph: {
+      type: 'music.album',
+      title: release.title,
+      description,
+      images: [{ url: release.cover }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: release.title,
+      description,
+      images: [release.cover],
+    },
   };
 }
 

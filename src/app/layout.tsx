@@ -33,8 +33,28 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: 'Peter the Phantom',
-  description: 'Generative live performance, music and universe of Peter the Phantom.',
+  title: {
+    template: '%s — Peter the Phantom',
+    default: 'Peter the Phantom',
+  },
+  description: 'Peter the Phantom is a generative live performance artist blending music, visual storytelling, and immersive universe-building into one singular experience.',
+  metadataBase: new URL('https://peterthephantom.com'),
+  openGraph: {
+    type: 'website',
+    siteName: 'Peter the Phantom',
+    images: [{ url: '/og-default.jpg' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
